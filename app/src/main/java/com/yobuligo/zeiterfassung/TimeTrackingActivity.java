@@ -2,13 +2,19 @@ package com.yobuligo.zeiterfassung;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.yobuligo.zeiterfassung.db.DbHelper;
+
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class TimeTrackingActivity extends AppCompatActivity {
     private EditText startDateTime;
@@ -35,6 +41,18 @@ public class TimeTrackingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
                 startDateTime.setText(dateTimeFormatter.format(calendar.getTime()));
+
+                DateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.GERMANY);
+
+                DbHelper dbHelper = new DbHelper(getApplicationContext());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("start_time", dbFormat.format(calendar.getTime()));
+                db.insert("time_data", null, values);
+                db.insert("time_data2", null, values);
+                db.close();
+                dbHelper.close();
+
             }
         });
 
