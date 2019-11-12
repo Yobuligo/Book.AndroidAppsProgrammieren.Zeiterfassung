@@ -3,19 +3,17 @@ package com.yobuligo.zeiterfassung;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.yobuligo.zeiterfassung.db.DbHelper;
 import com.yobuligo.zeiterfassung.db.TimeDataContract;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class TimeTrackingActivity extends AppCompatActivity {
     private EditText startDateTime;
@@ -32,6 +30,54 @@ public class TimeTrackingActivity extends AppCompatActivity {
         endDateTime = findViewById(R.id.EndDateTime);
         startCommand = findViewById(R.id.StartCommand);
         endCommand = findViewById(R.id.EndCommand);
+
+        //avoid keyboard input
+        startDateTime.setKeyListener(null);
+        endDateTime.setKeyListener(null);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initFromDb();
+    }
+
+    private void initFromDb() {
+        //deactive buttons
+        startCommand.setEnabled(false);
+        endCommand.setEnabled(false);
+
+        //load still open entry, as far as available
+        Cursor data = getContentResolver().query(
+                TimeDataContract.TimeData.NOT_FINISHED_CONTENT_URI,
+                new String[]{TimeDataContract.TimeData.Columns.START_TIME},
+                null,
+                null,
+                null
+        );
+
+        //Check if data exists
+        if (data.moveToFirst()) {
+            Calendar startTime = null;
+            try {
+                startTime = TimeDataContract.Converter.parse(data.getString(0));
+                startDateTime.setText(dateTimeFormatter.format(startTime.getTime()));
+            } catch (ParseException e) {
+                //error while converting the start time
+                startDateTime.setText("Falsches Datumsformat in der Datenbank");
+            }
+
+            //activate end button
+            endDateTime.setText("");
+            endCommand.setEnabled(true);
+        } else {
+            //activate start button
+            startDateTime.setText("");
+            endDateTime.setText("");
+            startCommand.setEnabled(true);
+        }
+
+        data.close();
     }
 
     @Override
