@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".db.TimeDataProvider"
+            android:authorities="com.yobuligo.zeiterfassung.provider" />
     </application>
 
 </manifest>

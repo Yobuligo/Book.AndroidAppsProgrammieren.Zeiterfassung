@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.yobuligo.zeiterfassung.db.DbHelper;
+import com.yobuligo.zeiterfassung.db.TimeDataContract;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,33 +37,8 @@ public class TimeTrackingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startCommand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                startDateTime.setText(dateTimeFormatter.format(calendar.getTime()));
-
-                DateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.GERMANY);
-
-                DbHelper dbHelper = new DbHelper(getApplicationContext());
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put("start_time", dbFormat.format(calendar.getTime()));
-                db.insert("time_data", null, values);
-                db.insert("time_data2", null, values);
-                db.close();
-                dbHelper.close();
-
-            }
-        });
-
-        endCommand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                endDateTime.setText(dateTimeFormatter.format(calendar.getTime()));
-            }
-        });
+        startCommand.setOnClickListener(new StartButtonClicked());
+        endCommand.setOnClickListener(new EndButtonClicked());
     }
 
     @Override
@@ -70,5 +46,49 @@ public class TimeTrackingActivity extends AppCompatActivity {
         super.onPause();
         startCommand.setOnClickListener(null);
         endCommand.setOnClickListener(null);
+    }
+
+
+    class StartButtonClicked implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            //get current time
+            Calendar calendar = Calendar.getInstance();
+
+            //Convert time for database
+            String dbTime = TimeDataContract.Converter.format(calendar);
+
+            //Time for database
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(TimeDataContract.TimeData.Columns.START_TIME, dbTime);
+
+            //Save to database
+            v.getContext().getContentResolver().insert(TimeDataContract.TimeData.CONTENT_URI, contentValues);
+
+            //output for URI
+            startDateTime.setText(dateTimeFormatter.format(calendar.getTime()));
+        }
+    }
+
+    class EndButtonClicked implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            //get current time
+            Calendar calendar = Calendar.getInstance();
+
+            //Convert time for database
+            String dbTime = TimeDataContract.Converter.format(calendar);
+
+            //Time for database
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(TimeDataContract.TimeData.Columns.END_TIME, dbTime);
+
+            //Save to database
+            v.getContext().getContentResolver().update(TimeDataContract.TimeData.NOT_FINISHED_CONTENT_URI, contentValues, null, null);
+
+            //output for URI
+            endDateTime.setText(dateTimeFormatter.format(calendar.getTime()));
+        }
     }
 }
