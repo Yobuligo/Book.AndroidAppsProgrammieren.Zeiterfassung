@@ -2,4 +2,5 @@
 <resources>
     <dimen name="ActivityVerticalPadding">16dp</dimen>
     <dimen name="ActivityHorizontalPadding">16dp</dimen>
+    <dimen name="ListItemColumnPadding">8dp</dimen>
 </resources>

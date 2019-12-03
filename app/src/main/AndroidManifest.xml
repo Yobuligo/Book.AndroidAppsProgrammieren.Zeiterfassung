@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".DemoActivity"></activity>
         <activity android:name=".TimeTrackingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,10 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ListDataActivity"
+            android:label="@string/ListDataActivityTitle" />
 
         <provider
             android:name=".db.TimeDataProvider"
-            android:authorities="com.yobuligo.zeiterfassung.provider" />
+            android:authorities="com.yobuligo.zeiterfassung.provider"/>
     </application>
 
 </manifest>

@@ -4,4 +4,8 @@
     <string name="LabelEndTime">Endzeit:</string>
     <string name="ButtonStart">Starten</string>
     <string name="ButtonEnd">Beenden</string>
+    <string name="ListDataMenuItem">Auflistung</string>
+    <string name="ListDataActivityTitle">Auflistung</string>
+    <string name="Test">Test</string>
+    <string name="menu_item_delete">Delete</string>
 </resources>

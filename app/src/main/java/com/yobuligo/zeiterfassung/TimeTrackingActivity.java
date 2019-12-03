@@ -1,13 +1,19 @@
 package com.yobuligo.zeiterfassung;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.yobuligo.zeiterfassung.db.TimeDataContract;
 
@@ -94,6 +100,31 @@ public class TimeTrackingActivity extends AppCompatActivity {
         endCommand.setOnClickListener(null);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_time_tracking, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ListDataMenuItem:
+                /*//Implizit intent
+                Intent googleIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.de"));
+                startActivity(googleIntent);
+                Toast.makeText(TimeTrackingActivity.this, "Auflistung aufrufen", Toast.LENGTH_LONG).show();*/
+
+                //Expliziter Intent
+                Intent listDataIntent = new Intent(this, ListDataActivity.class);
+                startActivity(listDataIntent);
+                return true;
+            case R.id.menu_item_test:
+                Toast.makeText(TimeTrackingActivity.this, "Test", Toast.LENGTH_LONG).show();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     class StartButtonClicked implements View.OnClickListener {
         @Override

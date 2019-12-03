@@ -5,4 +5,5 @@
     <string name="ButtonStart">Start</string>
     <string name="LabelEndTime">End time:</string>
     <string name="LabelStartTime">Start time:</string>
+    <string name="ListDataMenuItem">List</string>
 </resources>

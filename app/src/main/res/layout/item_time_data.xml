@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/ActivityHorizontalPadding"
+        android:paddingTop="@dimen/ActivityVerticalPadding"
+        android:paddingEnd="@dimen/ActivityHorizontalPadding"
+        android:paddingBottom="@dimen/ActivityVerticalPadding"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/StartTimeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <View
+            android:layout_width="@dimen/ListItemColumnPadding"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/EndTimeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/colorAccent" />
+
+</LinearLayout>
