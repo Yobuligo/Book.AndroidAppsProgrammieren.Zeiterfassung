@@ -7,5 +7,11 @@
     <string name="ListDataMenuItem">Auflistung</string>
     <string name="ListDataActivityTitle">Auflistung</string>
     <string name="Test">Test</string>
-    <string name="menu_item_delete">Delete</string>
+    <string name="menu_item_delete">Löschen</string>
+    <string name="more_icon" translatable="false">&#8942;</string>
+    <string name="menu_item_add">Hinzufügen</string>
+    <string name="DialogTitleDeleteItem">Eintrag löschen</string>
+    <string name="DialogMessageDeleteItem">Soll der Eintrag jetzt gelöscht werden?</string>
+    <string name="ButtonCancel">Abbrechen</string>
+    <string name="ButtonDelete">Löschen</string>
 </resources>

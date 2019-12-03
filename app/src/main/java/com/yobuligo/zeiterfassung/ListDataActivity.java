@@ -1,6 +1,8 @@
 package com.yobuligo.zeiterfassung;
 
+import android.content.ContentUris;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,11 +13,15 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.yobuligo.zeiterfassung.adapter.TimeDataAdapter;
 import com.yobuligo.zeiterfassung.db.TimeDataContract;
+import com.yobuligo.zeiterfassung.dialogs.DeleteTimeDataDialog;
+import com.yobuligo.zeiterfassung.dialogs.IConfirmDeleteListener;
+import com.yobuligo.zeiterfassung.dialogs.IDeleteItemListener;
 
-public class ListDataActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class ListDataActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, IConfirmDeleteListener, IDeleteItemListener {
 
     private TimeDataAdapter timeDataAdapter = null;
     private static final int _LOADER_ID = 100;
@@ -29,10 +35,6 @@ public class ListDataActivity extends AppCompatActivity implements LoaderManager
         timeDataAdapter = new TimeDataAdapter(this, data);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(timeDataAdapter);
-
-        //Testdaten über Contextprovider laden
-
-        //timeDataAdapter.swapCursor(data);
     }
 
     @NonNull
@@ -86,5 +88,32 @@ public class ListDataActivity extends AppCompatActivity implements LoaderManager
                 timeDataAdapter.swapCursor(null);
                 break;
         }
+    }
+
+    @Override
+    public void confirmDelete(long id, int position) {
+        //Argumente initialisieren
+        Bundle arguments = new Bundle();
+        arguments.putLong(DeleteTimeDataDialog.ID_KEY, id);
+        arguments.putInt(DeleteTimeDataDialog.POSITION_KEY, position);
+
+        //Dialog initialisieren
+        DeleteTimeDataDialog deleteTimeDataDialog = new DeleteTimeDataDialog();
+        deleteTimeDataDialog.setArguments(arguments);
+
+        //Dialog anzeigen
+        deleteTimeDataDialog.show(getSupportFragmentManager(), "DeleteDialog");
+    }
+
+    @Override
+    public void deleteItem(long id, int position) {
+        //Uri zum Löschen erzeugen
+        Uri deleteUri = ContentUris.withAppendedId(TimeDataContract.TimeData.CONTENT_URI, id);
+
+        //Löschen
+        getContentResolver().delete(deleteUri, null, null);
+
+        //Benachrichtigung, dass ein Datensatz gelöscht wurde (Recycler View)
+        timeDataAdapter.notifyItemRemoved(position);
     }
 }

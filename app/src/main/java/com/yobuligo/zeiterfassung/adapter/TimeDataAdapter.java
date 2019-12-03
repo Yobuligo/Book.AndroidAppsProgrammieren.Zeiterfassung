@@ -1,18 +1,28 @@
 package com.yobuligo.zeiterfassung.adapter;
 
 
+import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
+import android.net.Uri;
+import android.provider.BaseColumns;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yobuligo.zeiterfassung.R;
 import com.yobuligo.zeiterfassung.db.TimeDataContract;
+import com.yobuligo.zeiterfassung.dialogs.IConfirmDeleteListener;
+import com.yobuligo.zeiterfassung.dialogs.IDeleteItemListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,7 +48,7 @@ public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDa
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TimeDataViewHolder timeDataViewHolder, int position) {
+    public void onBindViewHolder(@NonNull final TimeDataViewHolder timeDataViewHolder, int position) {
         //keine Daten vorhanden
         if (data == null) {
             return;
@@ -76,6 +86,18 @@ public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDa
         //Daten ins View schreiben
         timeDataViewHolder.startTime.setText(startTimeString);
         timeDataViewHolder.endTime.setText(endTimeString);
+        timeDataViewHolder.position = position;
+        timeDataViewHolder.itemId = getItemId(position);
+
+        timeDataViewHolder.moreIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(context, timeDataViewHolder.moreIcon);
+                popupMenu.inflate(R.menu.ctx_menu_data_list);
+                popupMenu.setOnMenuItemClickListener(new OnMenuItemClicked(timeDataViewHolder.itemId, timeDataViewHolder.position));
+                popupMenu.show();
+            }
+        });
     }
 
     @Override
@@ -85,6 +107,19 @@ public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDa
         }
 
         return data.getCount();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (data == null) {
+            return -1L;
+        }
+
+        if (data.moveToPosition(position)) {
+            return data.getLong(data.getColumnIndex(BaseColumns._ID));
+        }
+
+        return -1L;
     }
 
     public void swapCursor(Cursor newData) {
@@ -99,11 +134,43 @@ public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDa
     class TimeDataViewHolder extends RecyclerView.ViewHolder {
         final TextView startTime;
         final TextView endTime;
+        final TextView moreIcon;
+        Long itemId;
+        int position;
 
         public TimeDataViewHolder(@NonNull View itemView) {
             super(itemView);
             startTime = itemView.findViewById(R.id.StartTimeValue);
             endTime = itemView.findViewById(R.id.EndTimeValue);
+            moreIcon = itemView.findViewById(R.id.more_icon_text);
+        }
+    }
+
+    class OnMenuItemClicked implements PopupMenu.OnMenuItemClickListener {
+        private final long id;
+        private final int position;
+
+        public OnMenuItemClicked(long id, int position) {
+            this.id = id;
+            this.position = position;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_item_delete:
+                    deleteItem(id, position);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void deleteItem(final long id, final int position) {
+            //Datensatz löschen
+            if (context instanceof IConfirmDeleteListener) {
+                ((IConfirmDeleteListener) context).confirmDelete(id, position);
+            }
         }
     }
 

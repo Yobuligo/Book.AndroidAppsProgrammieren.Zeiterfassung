@@ -6,4 +6,8 @@
     <string name="LabelEndTime">End time:</string>
     <string name="LabelStartTime">Start time:</string>
     <string name="ListDataMenuItem">List</string>
+    <string name="menu_item_delete">Delete</string>
+    <string name="menu_item_add">Add</string>
+    <string name="Test">Test</string>
+    <string name="ListDataActivityTitle">List</string>
 </resources>
