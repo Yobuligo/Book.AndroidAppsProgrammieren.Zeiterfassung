@@ -14,4 +14,11 @@
         android:icon="@drawable/icon_show_message"
         android:title="@string/Test"
         />
+
+    <item
+        app:showAsAction="always"
+        android:id="@+id/menu_item_export"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        android:title="@string/menu_item_export"
+        />
 </menu>

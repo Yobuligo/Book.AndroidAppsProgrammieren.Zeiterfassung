@@ -1,10 +1,15 @@
 package com.yobuligo.zeiterfassung;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yobuligo.zeiterfassung.db.TimeDataContract;
+import com.yobuligo.zeiterfassung.utils.CsvExporter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -27,6 +33,7 @@ public class TimeTrackingActivity extends AppCompatActivity {
     private Button startCommand;
     private Button endCommand;
     private final DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+    private final int _REQUEST_WRITE_PERMISSION_ID = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +128,40 @@ public class TimeTrackingActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_item_test:
                 Toast.makeText(TimeTrackingActivity.this, "Test", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.menu_item_export:
+                Toast.makeText(this, "Test Export", Toast.LENGTH_SHORT).show();
+
+                //Abfrage der Berechtigung (geprüft wird, ob die benötigte Berechtigung gegeben ist
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    CsvExporter csvExporter = new CsvExporter(this);
+                    csvExporter.execute();
+                } else {
+                    //Berechtigung anfragen,
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, _REQUEST_WRITE_PERMISSION_ID);
+                }
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //Prüfen, von welcher Anfrage die Antwort kommt
+        if (requestCode == _REQUEST_WRITE_PERMISSION_ID) {
+            //prüfen, ob die Berechtigung erteilt wurde
+            if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[0])
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Berechtigung erteilt, Export durchgeführen
+                CsvExporter csvExporter = new CsvExporter(this);
+                csvExporter.execute();
+            } else {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
         }
     }
 

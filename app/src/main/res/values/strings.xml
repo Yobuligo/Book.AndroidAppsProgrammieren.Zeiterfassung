@@ -14,4 +14,8 @@
     <string name="DialogMessageDeleteItem">Soll der Eintrag jetzt gelöscht werden?</string>
     <string name="ButtonCancel">Abbrechen</string>
     <string name="ButtonDelete">Löschen</string>
+    <string name="menu_item_export">Export</string>
+    <string name="export_completed">Export abgeschossen</string>
+    <string name="DialogTitleExport">Daten exportieren</string>
+    <string name="DialogMessageExport">Daten werden exportiert</string>
 </resources>
