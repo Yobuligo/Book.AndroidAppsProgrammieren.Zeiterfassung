@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yobuligo.zeiterfassung">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +25,9 @@
 
         <provider
             android:name=".db.TimeDataProvider"
-            android:authorities="com.yobuligo.zeiterfassung.provider"/>
+            android:authorities="com.yobuligo.zeiterfassung.provider" />
+
+        <service android:name=".services.CsvExportService" />
     </application>
 
 </manifest>

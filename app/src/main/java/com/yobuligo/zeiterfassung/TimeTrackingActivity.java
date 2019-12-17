@@ -1,17 +1,10 @@
 package com.yobuligo.zeiterfassung;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +13,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.yobuligo.zeiterfassung.db.TimeDataContract;
+import com.yobuligo.zeiterfassung.services.CsvExportService;
 import com.yobuligo.zeiterfassung.utils.CsvExporter;
 
 import java.text.DateFormat;
@@ -134,8 +132,7 @@ public class TimeTrackingActivity extends AppCompatActivity {
 
                 //Abfrage der Berechtigung (geprüft wird, ob die benötigte Berechtigung gegeben ist
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    CsvExporter csvExporter = new CsvExporter(this);
-                    csvExporter.execute();
+                    exportCsv();
                 } else {
                     //Berechtigung anfragen,
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, _REQUEST_WRITE_PERMISSION_ID);
@@ -163,6 +160,12 @@ public class TimeTrackingActivity extends AppCompatActivity {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
+    }
+
+    private void exportCsv() {
+        //Service für Export initialisieren
+        Intent exportService = new Intent(this, CsvExportService.class);
+        startService(exportService);
     }
 
     class StartButtonClicked implements View.OnClickListener {

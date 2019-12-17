@@ -18,4 +18,9 @@
     <string name="export_completed">Export abgeschossen</string>
     <string name="DialogTitleExport">Daten exportieren</string>
     <string name="DialogMessageExport">Daten werden exportiert</string>
+    <string name="ExportNotificationChannel">Export Notification Channel</string>
+    <string name="ExportNotificationChannelDescription">Export Notification Channel Description</string>
+    <string name="ExportNotificationTitle">Export Notification Title</string>
+    <string name="ExportNotificationMessage">Export Notification Message</string>
+    <string name="ExportNotificationFinishMessage">Export Notification Finish Message</string>
 </resources>
